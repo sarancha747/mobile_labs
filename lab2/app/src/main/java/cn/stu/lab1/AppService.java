@@ -8,16 +8,13 @@ import android.util.Log;
 import android.widget.Button;
 
 public class AppService  extends Service {
-
     private AppBinder binder = new AppBinder();
-
     @Override
     public void onCreate(){
         super.onCreate();
         Log.d("AppService", "onCreate");
         System.out.println("onCreateService");
     }
-
     @Override
     public void onDestroy(){
         super.onDestroy();
@@ -27,7 +24,9 @@ public class AppService  extends Service {
     public IBinder onBind(Intent intent){
         return binder;
     }
-
+    public String test(){
+        return "test string";
+    }
     public boolean checkForWin(Button[][] buttons) {
         System.out.println("biba");
         String[][] field = new String[3][3];
@@ -62,7 +61,6 @@ public class AppService  extends Service {
         }
         return false;
     }
-
     class AppBinder extends Binder {
         public AppService getService(){
             return AppService.this;

@@ -1,18 +1,23 @@
 package cn.stu.lab1;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+public class HomeFragment extends Fragment implements View.OnClickListener{
     private Button[][] buttons = new Button[3][3];
     private boolean player1Turn = true;
     private int roundCount;
@@ -22,72 +27,48 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private TextView textViewPlayer2;
     private String firstPlayerName;
     private String secondPlayerName;
-    private AppService service;
+    private MainActivity mainActivity = new MainActivity();
+    public static final String FIRST_MESSAGE = "FIRST_MESSAGE";
+    public static final String SECOND_MESSAGE = "SECOND_MESSAGE";
 
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder binder) {
-            service = ((AppService.AppBinder) binder).getService();
-        }
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
-    @Override
-    protected void onStart(){
-        super.onStart();
-        Intent intent = new Intent(this, AppService.class);
-        bindService(intent, connection, BIND_AUTO_CREATE);
-    }
-    @Override
-    protected void onStop(){
-        super.onStop();
-        unbindService(connection);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
-        getSupportActionBar().hide();
-        textViewPlayer1 = findViewById(R.id.text_view_p1);
-        textViewPlayer2 = findViewById(R.id.text_view_p2);
-
-        Intent intent = getIntent();
-        firstPlayerName = intent.getStringExtra(SetActivity.FIRST_MESSAGE);
-        secondPlayerName = intent.getStringExtra(SetActivity.SECOND_MESSAGE);
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        textViewPlayer1 = view.findViewById(R.id.text_view_p1);
+        textViewPlayer2 = view.findViewById(R.id.text_view_p2);
+        firstPlayerName = getArguments().getString(FIRST_MESSAGE);
+        secondPlayerName = getArguments().getString(SECOND_MESSAGE);
         textViewPlayer1.setText(firstPlayerName + ": " + "0");
         textViewPlayer2.setText(secondPlayerName + ": " + "0");
-
         //setContentView(R.layout.activity_home);
-
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 String buttonID = "button_" + i + j;
-                int resID = getResources().getIdentifier(buttonID, "id", getPackageName());
-                buttons[i][j] = findViewById(resID);
+                int resID = getResources().getIdentifier(buttonID, "id", getActivity().getPackageName());
+                buttons[i][j] = view.findViewById(resID);
                 buttons[i][j].setOnClickListener(this);
 
             }
         }
-        Button buttonReset = findViewById(R.id.button_reset);
+        Button buttonReset = view.findViewById(R.id.button_reset);
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 resetGame();
             }
         });
-
-        Button buttonExit = findViewById(R.id.button_exit);
+        Button buttonExit = view.findViewById(R.id.button_exit);
         buttonExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 exitGame();
             }
         });
-    }
+        }
     @Override
     public void onClick(View v) {
         if (!((Button) v).getText().toString().equals("")) {
@@ -99,8 +80,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             ((Button) v).setText("O");
         }
         roundCount++;
-        boolean winner = service.checkForWin(buttons);
-        if (winner) {
+        if (mainActivity.winnerCheck(buttons)) {
             if (player1Turn) {
                 player1Wins();
             } else {
@@ -114,18 +94,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
     private void player1Wins() {
         player1Points++;
-        Toast.makeText(this, firstPlayerName + " wins!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, firstPlayerName + " wins!", Toast.LENGTH_SHORT).show();
         updatePointsText();
         resetBoard();
     }
     private void player2Wins() {
         player2Points++;
-        Toast.makeText(this, secondPlayerName + " wins!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, secondPlayerName + " wins!", Toast.LENGTH_SHORT).show();
         updatePointsText();
         resetBoard();
     }
     private void draw() {
-        Toast.makeText(this, "Draw!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Draw!", Toast.LENGTH_SHORT).show();
         resetBoard();
     }
     private void updatePointsText() {
@@ -151,16 +131,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         System.exit(0);
     }
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("roundCount", roundCount);
         outState.putInt("player1Points", player1Points);
         outState.putInt("player2Points", player2Points);
         outState.putBoolean("player1Turn", player1Turn);
     }
-    @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+        //super.onRestoreInstanceState(savedInstanceState);
         roundCount = savedInstanceState.getInt("roundCount");
         player1Points = savedInstanceState.getInt("player1Points");
         player2Points = savedInstanceState.getInt("player2Points");
