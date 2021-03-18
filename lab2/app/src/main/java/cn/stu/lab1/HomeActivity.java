@@ -2,8 +2,11 @@ package cn.stu.lab1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,6 +22,29 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private TextView textViewPlayer2;
     private String firstPlayerName;
     private String secondPlayerName;
+    private AppService service;
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            service = ((AppService.AppBinder) binder).getService();
+        }
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+    };
+    @Override
+    protected void onStart(){
+        super.onStart();
+        Intent intent = new Intent(this, AppService.class);
+        bindService(intent, connection, BIND_AUTO_CREATE);
+    }
+    @Override
+    protected void onStop(){
+        super.onStop();
+        unbindService(connection);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +99,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             ((Button) v).setText("O");
         }
         roundCount++;
-        if (checkForWin()) {
+        boolean winner = service.checkForWin(buttons);
+        if (winner) {
             if (player1Turn) {
                 player1Wins();
             } else {
@@ -84,39 +111,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             player1Turn = !player1Turn;
         }
-    }
-    private boolean checkForWin() {
-        String[][] field = new String[3][3];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                field[i][j] = buttons[i][j].getText().toString();
-            }
-        }
-        for (int i = 0; i < 3; i++) {
-            if (field[i][0].equals(field[i][1])
-                    && field[i][0].equals(field[i][2])
-                    && !field[i][0].equals("")) {
-                return true;
-            }
-        }
-        for (int i = 0; i < 3; i++) {
-            if (field[0][i].equals(field[1][i])
-                    && field[0][i].equals(field[2][i])
-                    && !field[0][i].equals("")) {
-                return true;
-            }
-        }
-        if (field[0][0].equals(field[1][1])
-                && field[0][0].equals(field[2][2])
-                && !field[0][0].equals("")) {
-            return true;
-        }
-        if (field[0][2].equals(field[1][1])
-                && field[0][2].equals(field[2][0])
-                && !field[0][2].equals("")) {
-            return true;
-        }
-        return false;
     }
     private void player1Wins() {
         player1Points++;
