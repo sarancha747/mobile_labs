@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1060491660299",
+    "project_id": "authentication-4724a",
+    "storage_bucket": "authentication-4724a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1060491660299:android:563f38ecbe3c6ff61f4b0e",
+        "android_client_info": {
+          "package_name": "cn.stu.rgr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1060491660299-jke8avbe2egavp9spmp65k3f8vgrnk0e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwF4VQCChixSXQxk9TMVIUSHtO_ZL0k-I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1060491660299-jke8avbe2egavp9spmp65k3f8vgrnk0e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
