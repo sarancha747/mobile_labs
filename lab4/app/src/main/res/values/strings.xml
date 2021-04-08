@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Lab4</string>
+    <string name="search">Search</string>
+    <string name="no_repositories">No holidays</string>
+    <string name="some_error_happened_upon_loading_the_list">Some error happened upon loading the list</string>
+    <string name="holiday">Holiday</string>
+</resources>

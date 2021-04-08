@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_padding">16dp</dimen>
+    <dimen name="list_margin">12dp</dimen>
+    <dimen name="item_padding">12dp</dimen>
+    <dimen name="stars_padding">4dp</dimen>
+    <dimen name="title_text">20sp</dimen>
+    <dimen name="title_margin">16dp</dimen>
+    <dimen name="description_margin">12dp</dimen>
+    <dimen name="description_text">16sp</dimen>
+    <dimen name="item_text">14sp</dimen>
+    <dimen name="space_margin">6dp</dimen>
+</resources>
